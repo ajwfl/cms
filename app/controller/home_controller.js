@@ -8,10 +8,11 @@ var HomeController = {
 
   	var usuario = new Usuario();
 
-  	usuario.nome = 'Joao';
-  	usuario.login = 'Joao';
-  	usuario.senha = 'Joao';
-  	usuario.email = 'Joao@gmail.com';
+    usuario.id = 2;
+  	usuario.nome = 'Maria';
+  	usuario.login = 'Maria';
+  	usuario.senha = 'Maria';
+  	usuario.email = 'Maria@gmail.com';
   	usuario.salvar();
 
     response.send('olá usuario');

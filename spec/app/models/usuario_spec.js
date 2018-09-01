@@ -93,6 +93,26 @@ describe("com o metodo todos", function() {
 	});
   });
 
+describe("com o metodo buscarPorNome", function() {
+	it("deve retornar todos os clientes", function(done) {
+		Usuario.excluirTodos(function(retorno1) {
+			nome = "Danilo com teste"
+			var usuario = new Usuario({nome:nome, login:"didox", senha:"123", email:"danilo@uol.com.br"});
+			usuario.salvar(function(retorno2) {
+				var usuario2 = new Usuario({nome:"Denilson", login:"didox", senha:"123", email:"danilo@uol.com.br"});
+				usuario2.salvar(function(retorno3) {
+				Usuario.buscarPorNome("danilo", function(retorno4) {
+					expect(retorno4.erro).toBE(false);
+					expect(retorno4.usuarios.length).toBE(1);
+					expect(retorno4.usuarios[0].nome).toBE(nome);
+					done();
+				});
+			});
+		});
+	});
+  });
+
+
 describe("com o metodo salvar para atualizar", function() {
 	it("deve atualizar o usuário criado", function(done) {
 		Usuario.excluirTodos(function(retorno1) {

@@ -116,7 +116,8 @@ Usuario.excluirTodos = function(callback) {
         }
       });
 
-}
+};
+
 Usuario.truncateTable = function(callback) {
       query = "TRUNCATE usuarios;";
 
@@ -130,7 +131,8 @@ Usuario.truncateTable = function(callback) {
         }
       });
 
-}
+};
+
 Usuario.excluirTodos = function(callback) {
       query ="DELETE FROM usuarios";
 
@@ -144,29 +146,26 @@ Usuario.excluirTodos = function(callback) {
         }
       });
 
-}
+};
 
-Usuario.todos = function(callback) {
-      query ="SELECT * FROM usuarios";
-
-      connection.query(query, function(rows, err) {
-
-        if (err !== undefined && err !== null) {
-             callback.call(null, {
-              erro: true,
-              mensagem: err.message, 
-              usuarios: []
-            });
-        }
-        else {
-             callback.call(null, {
-              erro: false, 
-              usuarios: rows
-            });
-        }
+Usuario.todos = function(callback){
+  query = "select * from usuarios;";
+  connection.query(query, function(rows, err) {
+    if(err !== undefined && err !== null){
+      callback.call(null, {
+        erro:true,
+        mensagem: err.message,
+        usuarios: []
       });
-
-}
+    }
+    else{
+      callback.call(null, {
+        erro:false,
+        usuarios:rows
+      });
+    }
+  });
+};
 
 Usuario.buscarPorID = function(id, callback) {
       query ="SELECT * FROM usuarios WHERE id=" + id +";";
@@ -177,7 +176,7 @@ Usuario.buscarPorID = function(id, callback) {
              callback.call(null, {
               erro: true,
               mensagem: err.message, 
-              usuario: []
+              usuario:{}
             });
         }
         else {
@@ -196,6 +195,35 @@ Usuario.buscarPorID = function(id, callback) {
         }
       });
 
-}
+};
+
+Usuario.buscarPorNome = function(id, callback) {
+      query ="SELECT * FROM usuarios WHERE nome like  '%" + nome + "%';";
+
+      connection.query(query, function(rows, err) {
+
+        if (err !== undefined && err !== null) {
+             callback.call(null, {
+              erro: true,
+              mensagem: err.message, 
+              usuarios: []
+            });
+        }
+        else {
+          if (rows.lenght > 0) {
+              callback.call(null, {
+              erro: false, 
+              usuarios: rows
+            });
+          }
+          else { 
+              callback.call(null, {
+              erro: false, 
+              usuarios: []
+            });
+          }
+        }
+      });
+};
 
 module.exports = Usuario;

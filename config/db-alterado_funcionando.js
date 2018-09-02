@@ -1,5 +1,5 @@
 mysql = require('mysql');
-connectionString = 'mysql://root:@localhost/cms';
+/*connectionString = 'mysql://root:@localhost/cms';
 
 db = {}
 db.cnn = {};
@@ -8,12 +8,11 @@ db.cnn.exec = function(query, callback) {
   connection.query(query, function(err, rows) {
     callback(rows, err);
     connection.end();
-    console.log('Connected to the MySQL server.');
   });
 };
+*/
 
-
-/*var connection= mysql.createConnection({
+var connection= mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
@@ -27,6 +26,5 @@ connection.connect(function(err) {
  
   console.log('Connected to the MySQL server.');
 });
-*/
 
-module.exports = db;
+module.exports = connection;

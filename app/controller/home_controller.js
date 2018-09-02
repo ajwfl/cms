@@ -7,12 +7,11 @@ var HomeController = {
   usuario: function(request, response, next){
 
   	var usuario = new Usuario();
-
     usuario.id = 2;
-  	usuario.nome = 'Maria';
-  	usuario.login = 'Maria';
-  	usuario.senha = 'Maria';
-  	usuario.email = 'Maria@gmail.com';
+  	usuario.nome = "Joao2";
+  	usuario.login = "joao2";
+  	usuario.senha = "joao2";
+  	usuario.email = "joao2@joao.com.br";
   	usuario.salvar();
 
     response.send('olá usuario');

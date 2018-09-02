@@ -1,43 +1,33 @@
-var connection = require('../../config/db.js');
+var db = require('../../config/db.js');
 
-var Usuario = function(usuario){
-  if(usuario !== undefined){
-    this.id = usuario.id;
-    this.nome = usuario.nome;
-    this.login = usuario.login;
-    this.senha = usuario.senha;
-    this.email = usuario.email;
+var Pagina = function(pagina){
+  if(pagina !== undefined){
+    this.id = pagina.id;
+    this.nome = pagina.nome;
+    this.conteudo = pagina.conteudo;
   }
   else{
     this.id = 0;
     this.nome = "";
-    this.login = "";
-    this.senha = "";
-    this.email = "";
+    this.conteudo = "";
   }
 
   this.salvar = function(callback){
     if(this.nome === ""){
-      console.log("[Modelo:Usuario] Nome de usuário obrigatório");
-      callback.call(null, {erro:true, mensagem: "[Modelo:Usuario] Nome de usuário obrigatório"});
+      console.log("[Modelo:Pagina] Nome da página obrigatório");
+      callback.call(null, {erro:true, mensagem: "[Modelo:pagina] Nome de pagina obrigatório"});
       return;
     }
 
-    if(this.login === ""){
-      console.log("[Modelo:Usuario] Nome de login obrigatório");
-      callback.call(null, {erro:true, mensagem: "[Modelo:Usuario] Nome de login obrigatório"});
-      return;
-    }
-
-    if(this.senha === ""){
-      console.log("[Modelo:Usuario] Nome de senha obrigatório");
-      callback.call(null, {erro:true, mensagem: "[Modelo:Usuario] Nome de senha obrigatório"});
+    if(this.conteudo === ""){
+      console.log("[Modelo:Pagina] Conteúdo da página obrigatório");
+      callback.call(null, {erro:true, mensagem: "[Modelo:pagina] Conteudo de pagina obrigatório"});
       return;
     }
 
     var query = "";
     if(this.id === 0 || this.id === "" || this.id === undefined){
-      query = "INSERT INTO usuarios (nome, login, senha, email) VALUES ('" + this.nome + "', '" + this.login + "', '" + this.senha + "', '" + this.email + "');";
+      query = "INSERT INTO paginas (nome, conteudo) VALUES ('" + this.nome + "', '" + this.conteudo + "');";
       db.cnn.exec(query, function(rows, err){
         if(err !== undefined && err !== null){
           callback.call(null, {erro:true, mensagem: err.message});
@@ -48,8 +38,8 @@ var Usuario = function(usuario){
       });
     }
     else{
-      query = "UPDATE usuarios SET nome='" + this.nome + "', login='" + this.login + "', senha='" + this.senha + "', email='" + this.email + "' WHERE id='" + this.id + "';";
-      connection.query(query, function(rows, err){
+      query = "UPDATE paginas SET nome='" + this.nome + "', conteudo='" + this.conteudo + "' WHERE id='" + this.id + "';";
+      db.cnn.exec(query, function(rows, err){
         if(err !== undefined && err !== null){
           callback.call(null, {erro:true, mensagem: err.message});
         }
@@ -61,8 +51,8 @@ var Usuario = function(usuario){
   };
 };
 
-Usuario.excluirTodos = function(callback){
-  query = "delete from usuarios;";
+Pagina.excluirTodos = function(callback){
+  query = "delete from paginas;";
   db.cnn.exec(query, function(rows, err){
     if(err !== undefined && err !== null){
       callback.call(null, {erro:true, mensagem: err.message});
@@ -73,8 +63,8 @@ Usuario.excluirTodos = function(callback){
   });
 };
 
-Usuario.truncateTable = function(callback){
-  query = "TRUNCATE usuarios;";
+Pagina.truncateTable = function(callback){
+  query = "TRUNCATE paginas;";
   db.cnn.exec(query, function(rows, err){
     if(err !== undefined && err !== null){
       callback.call(null, {erro:true, mensagem: err.message});
@@ -85,54 +75,54 @@ Usuario.truncateTable = function(callback){
   });
 };
 
-Usuario.todos = function(callback){
-  query = "select * from usuarios;";
+Pagina.todos = function(callback){
+  query = "select * from paginas;";
   db.cnn.exec(query, function(rows, err){
-    if(err !== undefined && err !== null){
+    if(err !== undefined && err !== null ){
       callback.call(null, {
         erro:true,
         mensagem: err.message,
-        usuarios: []
+        paginas: []
       });
     }
     else{
       callback.call(null, {
         erro:false,
-        usuarios:rows
+        paginas:rows
       });
     }
   });
 };
 
-Usuario.buscarPorID = function(id, callback){
-  query = "select * from usuarios where id=" + id + ";";
+Pagina.buscarPorID = function(id, callback){
+  query = "select * from paginas where id=" + id + ";";
   db.cnn.exec(query, function(rows, err){
     if(err !== undefined && err !== null){
       callback.call(null, {
         erro:true,
         mensagem: err.message,
-        usuario: {}
+        pagina: {}
       });
     }
     else{
       if(rows.length > 0){
         callback.call(null, {
           erro:false,
-          usuario:rows[0]
+          pagina:rows[0]
         });
       }
       else{
         callback.call(null, {
           erro:false,
-          usuario:{}
+          pagina:{}
         });
       }
     }
   });
 };
 
-Usuario.excluirPorID = function(id, callback){
-  query = "delete from usuarios where id=" + id + ";";
+Pagina.excluirPorID = function(id, callback){
+  query = "delete from paginas where id=" + id + ";";
   db.cnn.exec(query, function(rows, err){
     if(err !== undefined && err !== null){
       callback.call(null, {
@@ -148,31 +138,31 @@ Usuario.excluirPorID = function(id, callback){
   });
 };
 
-Usuario.buscarPorNome = function(nome, callback){
-  query = "select * from usuarios where nome like '%" + nome + "%';";
+Pagina.buscarPorNome = function(nome, callback){
+  query = "select * from paginas where nome like '%" + nome + "%';";
   db.cnn.exec(query, function(rows, err){
     if(err !== undefined && err !== null){
       callback.call(null, {
         erro:true,
         mensagem: err.message,
-        usuarios: []
+        paginas: []
       });
     }
     else{
       if(rows.length > 0){
         callback.call(null, {
           erro:false,
-          usuarios:rows
+          paginas:rows
         });
       }
       else{
         callback.call(null, {
           erro:false,
-          usuarios:[]
+          paginas:[]
         });
       }
     }
   });
 };
 
-module.exports = Usuario;
+module.exports = Pagina;

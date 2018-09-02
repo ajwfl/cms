@@ -1,7 +1,7 @@
-var Usuario = require("../models/usuario");
+var Pagina = require("../models/pagina");
 var Token = require("../models/token");
 
-var UsuariosController = {
+var PaginasController = {
   head: function(request, response, next){
     new Token().criar(function(retorno){
       response.header('auth_token', retorno.token);
@@ -10,43 +10,45 @@ var UsuariosController = {
   },
   todos: function(request, response, next) {
     if(request.query.nome !== undefined){
-      Usuario.buscarPorNome(request.query.nome, function(retorno){
+      Pagina.buscarPorNome(request.query.nome, function(retorno){
         if(retorno.erro){
           response.status(500).send({
-            erro:'Erro ao buscar usuarios por nome (' + request.query.nome + ') - (' + retorno.mensagem + ')'
+            erro:'Erro ao buscar paginas por nome (' + request.query.nome + ') - (' + retorno.mensagem + ')'
           });
         }
         else{
-          response.status(200).send(retorno.usuarios);
+          response.status(200).send(retorno.paginas);
         }
       });
     }
     else{
-      Usuario.todos(function(retorno){
+      Pagina.todos(function(retorno){
         if(retorno.erro){
+
           response.status(500).send({
-            erro:'Erro ao buscar usuarios (' + retorno.mensagem + ')'
+            erro:'Erro ao buscar paginas (' + retorno.mensagem + ')'
           });
         }
         else{
-          response.status(200).send(retorno.usuarios);
+          response.status(200).send(retorno.paginas);
         }
+
       });
     }
   },
   porId: function(request, response, next){
-    Usuario.buscarPorID(request.params.id, function(retorno){
+    Pagina.buscarPorID(request.params.id, function(retorno){
       if(retorno.erro){
         response.status(500).send({
-          erro:'Erro ao buscar usuario por id (' + retorno.mensagem + ')'
+          erro:'Erro ao buscar pagina por id (' + retorno.mensagem + ')'
         });
       }
       else{
-        if(retorno.usuario.nome !== undefined){
-          response.status(200).send(retorno.usuario);
+        if(retorno.pagina.nome !== undefined){
+          response.status(200).send(retorno.pagina);
         }
         else{
-          response.status(404).send({mensagem: "Usuario não encontrado"});
+          response.status(404).send({mensagem: "Pagina não encontrado"});
         }
       }
     });
@@ -60,24 +62,22 @@ var UsuariosController = {
 
         if(request.body.nome === undefined){
           response.status(400).send({
-            erro:'Erro ao cadastrar usuario o nome precisa estar preenchido.'
+            erro:'Erro ao cadastrar pagina o nome precisa estar preenchido.'
           });
           return;
         }
 
-        var usuario = new Usuario();
-        usuario.nome = request.body.nome;
-        usuario.login = request.body.login;
-        usuario.senha = request.body.senha;
-        usuario.email = request.body.email;
-        usuario.salvar(function(retorno){
+        var pagina = new Pagina();
+        pagina.nome = request.body.nome;
+        pagina.conteudo = request.body.conteudo;
+        pagina.salvar(function(retorno){
           if(retorno.erro){
-            response.status(400).send({
-              erro:'Erro ao cadastrar usuario (' + retorno.mensagem + ')'
+            response.status(500).send({
+              erro:'Erro ao cadastrar pagina (' + retorno.mensagem + ')'
             });
           }
           else{
-            response.status(201).send({mensagem: "Usuário criado com sucesso"});
+            response.status(201).send({mensagem: "Pagina criado com sucesso"});
           }
         });
       }
@@ -95,27 +95,25 @@ var UsuariosController = {
 
         Token.apagarToken(token);
 
-        Usuario.buscarPorID(request.body.id, function(retorno){
-          if(retorno.usuario.id === undefined){
+        Pagina.buscarPorID(request.body.id, function(retorno){
+          if(retorno.pagina.id === undefined){
             response.status(400).send({
-              erro:'Erro ao atualizar, id de usuario não encontrado'
+              erro:'Erro ao atualizar, id de pagina não encontrado'
             });
           }
           else{
-            var usuario = new Usuario();
-            usuario.id = request.body.id;
-            usuario.nome = request.body.nome;
-            usuario.login = request.body.login;
-            usuario.senha = request.body.senha;
-            usuario.email = request.body.email;
-            usuario.salvar(function(retorno){
+            var pagina = new Pagina();
+            pagina.id = request.body.id;
+            pagina.nome = request.body.nome;
+            pagina.conteudo = request.body.conteudo;
+            pagina.salvar(function(retorno){
               if(retorno.erro){
                 response.status(500).send({
-                  erro:'Erro ao atualizar usuario (' + retorno.mensagem + ')'
+                  erro:'Erro ao atualizar pagina (' + retorno.mensagem + ')'
                 });
               }
               else{
-                response.status(200).send({mensagem: "Usuário atualizado com sucesso"});
+                response.status(200).send({mensagem: "Pagina atualizado com sucesso"});
               }
             });
           }
@@ -139,39 +137,31 @@ var UsuariosController = {
 
         Token.apagarToken(token);
 
-        Usuario.buscarPorID(request.params.id, function(retorno){
-          if(retorno.usuario.id === undefined){
+        Pagina.buscarPorID(request.params.id, function(retorno){
+          if(retorno.pagina.id === undefined){
             response.status(400).send({
-              erro:'Erro ao atualizar, id de usuario não encontrado'
+              erro:'Erro ao atualizar, id de pagina não encontrado'
             });
           }
           else{
-            var usuario = new Usuario(retorno.usuario);
+            var pagina = new Pagina(retorno.pagina);
 
             if(request.body.nome !== undefined && request.body.nome !== ""){
-              usuario.nome = request.body.nome;
+              pagina.nome = request.body.nome;
             }
 
-            if(request.body.login !== undefined && request.body.login !== ""){
-              usuario.login = request.body.login;
+            if(request.body.conteudo !== undefined && request.body.conteudo !== ""){
+              pagina.conteudo = request.body.conteudo;
             }
 
-            if(request.body.senha !== undefined && request.body.senha !== ""){
-              usuario.senha = request.body.senha;
-            }
-
-            if(request.body.email !== undefined && request.body.email !== ""){
-              usuario.email = request.body.email;
-            }
-
-            usuario.salvar(function(retorno){
+            pagina.salvar(function(retorno){
               if(retorno.erro){
                 response.status(500).send({
-                  erro:'Erro ao atualizar usuario (' + retorno.mensagem + ')'
+                  erro:'Erro ao atualizar pagina (' + retorno.mensagem + ')'
                 });
               }
               else{
-                response.status(200).send({mensagem: "Usuário atualizado com sucesso"});
+                response.status(200).send({mensagem: "Pagina atualizado com sucesso"});
               }
             });
           }
@@ -184,17 +174,17 @@ var UsuariosController = {
       }
     });
   },
-  excluirUsuario: function(request, response, next){
+  excluirPagina: function(request, response, next){
     var token = request.headers.auth_token;
     Token.verificaToken(token, function(retorno){
       if(retorno.tokenValidado){
 
         Token.apagarToken(token);
 
-        Usuario.excluirPorID(request.params.id, function(retorno){
+        Pagina.excluirPorID(request.params.id, function(retorno){
           if(retorno.erro){
             response.status(500).send({
-              erro:'Erro ao excluir usuario (' + retorno.mensagem + ')'
+              erro:'Erro ao excluir pagina (' + retorno.mensagem + ')'
             });
           }
           else{
@@ -217,4 +207,4 @@ var UsuariosController = {
   }
 };
 
-module.exports = UsuariosController;
+module.exports = PaginasController;

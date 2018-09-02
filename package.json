@@ -18,6 +18,8 @@
     "jshint": "*",
     "morgan": "~1.9.0",
     "mysql": "*",
-    "request": "*"
+    "request": "*",
+    "serve-favicon": "^2.5.0",
+    "uuid": "*"
   }
 }

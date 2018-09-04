@@ -111,7 +111,7 @@ describe("O modelo de usuário", function() {
     });
   });
 
-  describe("com o método savar para atualizar", function() {
+  describe("com o método salvar para atualizar", function() {
     it("deve atualizar o usuário criado", function(done){
       Usuario.excluirTodos(function(retorno1){
         var usuario = new Usuario();
